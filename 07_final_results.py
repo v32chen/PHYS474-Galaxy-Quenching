@@ -2,8 +2,6 @@
 # coding: utf-8
 
 # In[2]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
@@ -130,8 +128,6 @@ print("\nFinal results table saved.")
 
 
 # In[3]:
-
-
 plt.figure(figsize=(8, 5.5))
 
 for values, ci, label, marker in [
@@ -163,8 +159,6 @@ plt.show()
 
 
 # In[4]:
-
-
 halo_edges = np.arange(11.5, 15.01, 0.5)
 halo_centers = (halo_edges[:-1] + halo_edges[1:]) / 2
 
@@ -315,8 +309,6 @@ print("All three final figures saved.")
 
 
 # In[5]:
-
-
 print("FINAL SAMPLE: THRESHOLD SENSITIVITY")
 print("Mass bin | -11.2 | -11.0 | -10.8")
 
@@ -336,10 +328,3 @@ for lo, hi in zip(mass_edges[:-1], mass_edges[1:]):
         f"{lo:.1f}-{hi:.1f} | "
         + " | ".join(f"{v:.3f}" for v in values)
     )
-
-
-# In[ ]:
-
-
-
-
