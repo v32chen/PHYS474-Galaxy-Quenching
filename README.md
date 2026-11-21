@@ -1,148 +1,147 @@
 # PHYS 474 — Environmental Dependence of Galaxy Quenching
 
-## Project Overview
+## About This Project
 
-This project investigates how galaxy environment influences the suppression of star formation, with a focus on comparing central and satellite galaxies.
+This project explores how a galaxy's environment affects its ability to form new stars. In particular, I wanted to investigate whether satellite galaxies are more likely to stop forming stars than central galaxies, even when they have similar stellar masses.
 
-The main research question is:
+The main question I am trying to answer is:
 
-**At fixed stellar mass, are satellite galaxies more likely to be quenched than central galaxies, and how does this excess quenching depend on the mass of their host dark-matter haloes?**
+**At fixed stellar mass, are satellite galaxies more likely to be quenched than central galaxies, and how does this depend on the mass of their host dark-matter halo?**
 
-The analysis uses observational data from the Sloan Digital Sky Survey Data Release 7 (SDSS DR7). Galaxy physical properties from the MPA-JHU catalogues are combined with environmental information from the Tinker galaxy group catalogue.
+To investigate this, I used observational data from the Sloan Digital Sky Survey (SDSS DR7). I combined measurements of galaxy stellar masses and star-formation rates with information about whether each galaxy is a central or satellite and the mass of its surrounding dark-matter halo.
 
-The project uses Python for catalogue cross-matching, data cleaning, statistical analysis, uncertainty estimation, and scientific visualization.
+The analysis was carried out in Python, from matching the original galaxy catalogues to calculating quenched fractions, estimating uncertainties, and producing the final graphs.
 
-This research was conducted as part of PHYS 474 (Fall 2026).
+This research was completed as part of **PHYS 474 (Fall 2026)**.
 
 ---
 
-## Data Sources
+## Where the Data Came From
 
-Two publicly available astronomical data resources were used.
+I used two main astronomical data sources.
 
-### 1. MPA-JHU SDSS DR7 Galaxy Catalogues
+### 1. MPA-JHU SDSS DR7 Catalogues
 
 Website: https://wwwmpa.mpa-garching.mpg.de/SDSS/DR7/
 
-The following four files provide galaxy physical properties:
+The MPA-JHU catalogues contain measurements of the physical properties of galaxies observed by SDSS. For this project, I used four files:
 
-| Catalogue | Description |
+| File | Information provided |
 |---|---|
-| `gal_info_dr7_v5_2.fit` | Galaxy positions, redshifts, and spectroscopic information |
-| `totlgm_dr7_v5_2.fit` | Stellar-mass estimates |
-| `gal_totsfr_dr7_v5_2.fits` | Total star-formation-rate estimates |
-| `gal_totspecsfr_dr7_v5_2.fits` | Total specific star-formation-rate estimates |
+| `gal_info_dr7_v5_2.fit` | Galaxy coordinates, redshifts, and spectroscopic information |
+| `totlgm_dr7_v5_2.fit` | Stellar masses |
+| `gal_totsfr_dr7_v5_2.fits` | Total star-formation rates |
+| `gal_totspecsfr_dr7_v5_2.fits` | Specific star-formation rates |
 
-The MPA-JHU measurements provide the quantities required to determine the star-formation activity of individual galaxies.
+These measurements let me determine how massive each galaxy is and how actively it is forming stars.
 
 ### 2. Tinker Galaxy Group Catalogue
 
 Website: https://www.galaxygroupfinder.net/catalogs
 
-Catalogue: `sdss_kdgroups_v1.0.dat`
+File: `sdss_kdgroups_v1.0.dat`
 
-This catalogue provides environmental information, including:
+The Tinker catalogue provides information about the environments in which galaxies live.
 
-- Satellite probabilities
-- Central and satellite classifications
-- Estimated host-halo masses
-- Galaxy group membership identifiers
-- Maximum observable survey volumes ($V_{\max}$)
+I mainly used it to identify:
 
-Galaxies are classified as satellites when their satellite probability satisfies $P_{\mathrm{sat}}>0.5$, and as centrals when $P_{\mathrm{sat}}<0.5$.
+- Whether a galaxy is classified as a central or satellite
+- The probability that a galaxy is a satellite
+- The estimated mass of its host dark-matter halo
+- The group to which it belongs
 
-The version of the catalogue used in this analysis contains 559,028 records. The catalogue website describes 559,038 records; this discrepancy is documented as a potential data-version limitation.
+For this analysis, galaxies with satellite probabilities above 0.5 are classified as satellites, while those below 0.5 are classified as centrals.
 
-**Note:** The original astronomical catalogues are not included in this repository because of their large file sizes. They can be obtained from the websites above.
+The catalogue version used here contains 559,028 records, although the website describes 559,038 records. I have noted this difference as a limitation of the dataset.
+
+The original astronomical catalogues are not uploaded to this repository because of their large sizes, but they can be accessed through the websites linked above.
 
 ---
 
-## Research Methodology
+## How I Analyzed the Data
 
-### 1. Galaxy Catalogue Cross-Matching
+### 1. Matching the Galaxy Catalogues
 
-The MPA-JHU and Tinker catalogues use different galaxy indexing systems. Therefore, galaxies are matched using their sky coordinates and redshifts rather than assuming that corresponding entries share the same row numbers.
+The first challenge was identifying which galaxies in the MPA-JHU catalogues corresponded to galaxies in the Tinker catalogue.
 
-The matching criteria are:
+Since the catalogues do not use the same row ordering, I matched the galaxies using their sky coordinates and redshifts.
 
-- Angular separation less than 1 arcsecond
-- Absolute redshift difference less than 0.001
-- A unique one-to-one correspondence between the catalogues
+I required:
 
-The cross-matching procedure identifies **498,431 unambiguous galaxy matches**.
+- An angular separation of less than 1 arcsecond
+- A redshift difference smaller than 0.001
+- A unique one-to-one match between the two catalogues
 
-### 2. Data Cleaning and Sample Selection
+This produced **498,431 matched galaxy records**.
 
-The combined data are screened for invalid measurements, unreliable redshifts, missing values, and relevant catalogue quality flags.
+### 2. Cleaning and Selecting the Galaxies
 
-The final primary sample uses the redshift selection:
+After matching the catalogues, I removed records with invalid or unreliable measurements using the available quality flags.
+
+I also needed to limit the sample to reduce observational selection effects. More distant galaxies generally need to be brighter to be included in a magnitude-limited survey, which can make lower-mass galaxies underrepresented.
+
+For the main analysis, I selected galaxies with:
 
 $$
 0.02 \leq z < 0.05
 $$
 
-and the stellar-mass range:
+and stellar masses satisfying:
 
 $$
 10.0 \leq \log_{10}(M_*/M_\odot) < 10.5
 $$
 
-An empirical stellar-mass completeness guideline is also applied to reduce observational selection effects. The resulting sample is treated as approximately mass-complete within the selected range, rather than assuming perfect completeness.
+I also applied an empirical stellar-mass completeness guideline. The resulting sample is treated as approximately mass-complete, although some selection effects may remain.
 
-The final primary sample contains **16,602 galaxies**:
+The final sample contains **16,602 galaxies**, consisting of:
 
-- **10,397 central galaxies**
-- **6,205 satellite galaxies**
+- 10,397 central galaxies
+- 6,205 satellite galaxies
 
-### 3. Galaxy Quenching Classification
+### 3. Identifying Quenched Galaxies
 
-The specific star-formation rate is defined as:
+To determine whether a galaxy is quenched, I used its specific star-formation rate (sSFR).
+
+This is the star-formation rate divided by stellar mass:
 
 $$
 \mathrm{sSFR} = \frac{\mathrm{SFR}}{M_*}
 $$
 
-where $\mathrm{SFR}$ is the star-formation rate and $M_*$ is the galaxy's stellar mass.
+A lower sSFR means that a galaxy is forming fewer new stars relative to the mass of stars it already contains.
 
-The specific star-formation-rate estimates are obtained from the MPA-JHU catalogue.
-
-Galaxies are classified as quenched when:
+For this project, galaxies were classified as quenched when:
 
 $$
 \log_{10}\left(\frac{\mathrm{sSFR}}{\mathrm{yr}^{-1}}\right) < -11
 $$
 
-Galaxies above this threshold are classified as star-forming for the purposes of this analysis.
+The sSFR measurements were obtained from the MPA-JHU catalogue.
 
-The sensitivity of the results to this definition is tested using alternative thresholds of −11.2 and −10.8.
+I also tested slightly different thresholds to check whether this choice affected the conclusions.
 
-### 4. Quenched Fraction
+### 4. Calculating Quenched Fractions
 
-The quenched fraction of a galaxy population is defined as:
+The quenched fraction tells us what proportion of galaxies in a given population are no longer forming stars at a significant rate.
+
+It is calculated using:
 
 $$
 f_Q = \frac{N_{\mathrm{quenched}}}{N_{\mathrm{total}}}
 $$
 
-where $N_{\mathrm{quenched}}$ is the number of quenched galaxies and $N_{\mathrm{total}}$ is the total number of galaxies in the selected population.
+I calculated this separately for central and satellite galaxies in five stellar-mass bins, each 0.1 dex wide.
 
-Quenched fractions are calculated separately for central and satellite galaxies within narrow stellar-mass bins of width 0.1 dex.
+Comparing galaxies within narrow mass ranges is important because stellar mass itself affects how likely a galaxy is to be quenched.
 
-### 5. Excess Satellite Quenching
-
-The excess quenched fraction among satellite galaxies is:
+To measure the difference between the two populations, I calculated:
 
 $$
 \Delta f_Q = f_{Q,\mathrm{sat}} - f_{Q,\mathrm{cen}}
 $$
 
-where $f_{Q,\mathrm{sat}}$ and $f_{Q,\mathrm{cen}}$ represent the satellite and central quenched fractions, respectively.
-
-A positive value indicates a higher quenched fraction among satellites compared with centrals of similar stellar mass.
-
-### 6. Satellite-Quenching Efficiency
-
-The satellite-quenching efficiency is defined as:
+I also calculated the satellite-quenching efficiency:
 
 $$
 \epsilon_{\mathrm{sat}} =
@@ -150,86 +149,67 @@ $$
 {1 - f_{Q,\mathrm{cen}}}
 $$
 
-This quantity measures the excess satellite quenched fraction relative to the fraction of central galaxies that remain star-forming.
+This measures the excess satellite quenched fraction relative to the fraction of central galaxies that are still star-forming.
 
-The analysis follows the general environmental-quenching framework discussed by Peng et al. (2012).
+### 5. Studying the Effect of Environment
 
-### 7. Environmental Dependence
+After comparing central and satellite galaxies, I investigated whether the quenched fraction of satellites changes with their host-halo mass.
 
-Satellite galaxies are divided into bins of host dark-matter halo mass.
+To do this, I divided satellite galaxies into halo-mass bins while keeping their stellar masses within narrow ranges.
 
-The analysis examines how the satellite quenched fraction and satellite-quenching efficiency vary with host-halo mass while controlling approximately for stellar mass.
-
-Host-halo masses are taken from the Tinker catalogue and expressed in units of $M_\odot/h$.
+This allowed me to examine how the environmental quenching signal changes between galaxies living in relatively small haloes and those in more massive galaxy groups and clusters.
 
 ---
 
-## Python Analysis Scripts
+## Python Files
 
-The repository contains seven Python analysis scripts.
+I organized the analysis into seven Python scripts.
 
-| File | Description |
+| Script | What it does |
 |---|---|
-| `01_catalogue_crossmatch.py` | Matches galaxy records between the MPA-JHU and Tinker catalogues |
-| `02_build_galaxy_sample.py` | Combines galaxy physical properties with environmental information |
-| `03_data_cleaning.py` | Inspects data quality, removes unreliable measurements, and explores sample distributions |
-| `04_quenching_analysis.py` | Calculates central and satellite quenched fractions as functions of stellar mass |
-| `05_environmental_analysis.py` | Investigates satellite quenching as a function of host-halo mass |
-| `06_robustness_checks.py` | Performs redshift, weighting, threshold, and uncertainty tests; defines the final primary sample |
-| `07_final_results.py` | Calculates final results and generates the publication figures and numerical tables |
+| `01_catalogue_crossmatch.py` | Matches galaxies between the MPA-JHU and Tinker catalogues |
+| `02_build_galaxy_sample.py` | Combines the galaxy measurements into one dataset |
+| `03_data_cleaning.py` | Checks the data quality and examines the galaxy distributions |
+| `04_quenching_analysis.py` | Calculates quenched fractions for central and satellite galaxies |
+| `05_environmental_analysis.py` | Investigates how quenching depends on host-halo mass |
+| `06_robustness_checks.py` | Tests the reliability of the results and selects the primary sample |
+| `07_final_results.py` | Produces the final results, uncertainty estimates, and figures |
 
-The scripts are designed to be run sequentially, since later stages use intermediate files generated by earlier stages.
+The scripts should be run in numerical order because later scripts use the outputs of earlier ones.
 
----
+### Software Used
 
-## Software Requirements
-
-The analysis uses Python 3 with the following scientific libraries:
+The project was completed using Python 3 and the following libraries:
 
 - NumPy
 - Astropy
 - Matplotlib
 
-Install these packages using:
+They can be installed using:
 
-`python -m pip install numpy astropy matplotlib`
+```bash
+python -m pip install numpy astropy matplotlib
+```
 
-The Python standard-library modules `csv`, `sys`, `site`, and `pathlib` are also used.
+### Reproducing the Analysis
 
----
+To reproduce the analysis, download the original MPA-JHU and Tinker catalogues from the websites above and place them in the working directory using the filenames expected by the scripts.
 
-## Reproducing the Analysis
+Run the seven Python scripts in numerical order.
 
-To reproduce the results:
+The analysis generates intermediate files such as `galaxy_crossmatch.npz`, `galaxy_combined_preclean.npz`, `galaxy_quality_mask.npy`, and `galaxy_final_sample_mask.npy`.
 
-1. Download the required SDSS DR7 MPA-JHU FITS catalogues.
-2. Download the Tinker galaxy group catalogue.
-3. Place the original data files in the working directory, using the filenames expected by the scripts.
-4. Install the required Python packages.
-5. Execute the analysis scripts in numerical order, from `01_catalogue_crossmatch.py` to `07_final_results.py`.
-
-The analysis generates several intermediate files:
-
-| File | Purpose |
-|---|---|
-| `galaxy_crossmatch.npz` | Matched galaxy row indices and matching diagnostics |
-| `galaxy_combined_preclean.npz` | Combined physical and environmental galaxy measurements |
-| `galaxy_quality_mask.npy` | Initial data-quality selection |
-| `galaxy_final_sample_mask.npy` | Primary scientific sample selection |
-
-These intermediate files are generated during the analysis and are not required to be stored in the repository when the original pipeline can be rerun.
+These files store the matched records and sample selections used in the later calculations.
 
 ---
 
-## Main Scientific Results
+## Main Results
 
-The final sample contains 16,602 galaxies selected from SDSS DR7.
+The results show that satellite galaxies have higher quenched fractions than central galaxies across all five stellar-mass bins examined.
 
-The results show that satellite galaxies have higher quenched fractions than central galaxies across all five investigated stellar-mass bins.
+### Comparing Central and Satellite Galaxies
 
-### Quenched Fraction and Satellite-Quenching Efficiency
-
-| Stellar-mass bin | Central quenched fraction | Satellite quenched fraction | Satellite-quenching efficiency |
+| Stellar-mass bin | Central quenched fraction | Satellite quenched fraction | Quenching efficiency |
 |---|---|---|---|
 | 10.0–10.1 | 0.200 | 0.594 | 0.493 |
 | 10.1–10.2 | 0.239 | 0.604 | 0.480 |
@@ -237,157 +217,114 @@ The results show that satellite galaxies have higher quenched fractions than cen
 | 10.3–10.4 | 0.358 | 0.654 | 0.460 |
 | 10.4–10.5 | 0.475 | 0.698 | 0.425 |
 
-Both central and satellite quenched fractions generally increase with stellar mass.
+Two trends stand out.
 
-However, the satellite population remains more strongly quenched at every stellar mass examined.
+First, both central and satellite galaxies become more likely to be quenched as stellar mass increases.
 
-### Host-Halo-Mass Dependence
+Second, satellites consistently have higher quenched fractions than centrals, even when their stellar masses are similar.
 
-The results also show a general increase in satellite quenched fraction with host-halo mass, particularly toward group and cluster environments.
+### Dependence on Host-Halo Mass
 
-The trend remains visible when galaxies are compared within narrow stellar-mass intervals.
+I also found that satellite galaxies generally become more likely to be quenched as their host-halo mass increases, particularly in more massive group and cluster environments.
 
-These findings are consistent with environmental processes contributing to the suppression of star formation in satellite galaxies.
+This suggests that the environment surrounding a satellite galaxy plays an important role in its star-formation activity.
 
-However, the analysis does not directly establish which physical quenching mechanism is responsible.
+These trends are consistent with environmental quenching mechanisms such as ram-pressure stripping and starvation, although the analysis does not directly identify which mechanism is responsible.
 
 ---
 
-## Scientific Figures
+## Final Figures
 
-The repository contains three principal figures generated from the final sample.
+The three main figures from the analysis are included in this repository.
 
-### Figure 1 — Quenched Fraction Versus Stellar Mass
+**Figure 1 — Quenched Fraction vs. Stellar Mass**
 
-**File:** `FINAL_FIGURE_1.pdf`
+`FINAL_FIGURE_1.pdf`
 
-Compares central and satellite quenched fractions in five stellar-mass bins. Error bars represent 95% group-bootstrap confidence intervals.
+Compares the quenched fractions of central and satellite galaxies across five stellar-mass bins, including 95% group-bootstrap confidence intervals.
 
-### Figure 2 — Satellite Quenching Versus Host-Halo Mass
+**Figure 2 — Satellite Quenching vs. Host-Halo Mass**
 
-**File:** `FINAL_FIGURE_2.pdf`
+`FINAL_FIGURE_2.pdf`
 
-Shows the satellite quenched fraction as a function of host-halo mass for galaxies with:
+Shows how the satellite quenched fraction changes with host-halo mass for galaxies within the stellar-mass range:
 
 $$
 10.2 \leq \log_{10}(M_*/M_\odot) < 10.3
 $$
 
-A central-galaxy reference fraction is included for comparison.
+A central-galaxy quenched fraction is included as a reference.
 
-### Figure 3 — Satellite-Quenching Efficiency Heatmap
+**Figure 3 — Satellite-Quenching Efficiency**
 
-**File:** `FINAL_FIGURE_3.pdf`
+`FINAL_FIGURE_3.pdf`
 
-Illustrates satellite-quenching efficiency as a function of both stellar mass and host-halo mass.
+Shows how satellite-quenching efficiency depends on both stellar mass and host-halo mass.
 
-Blank cells correspond to bins containing fewer than 30 satellite galaxies.
+Blank regions indicate bins with fewer than 30 satellites, where measurements were not reported.
 
----
+### Numerical Results
 
-## Numerical Results
+The numerical values used in the figures are saved in:
 
-The repository includes two CSV files containing the final quantitative results.
-
-### `final_quenching_results.csv`
-
-Contains:
-
-- Stellar-mass bins
-- Central and satellite galaxy counts
-- Quenched galaxy counts
-- Quenched fractions
-- Excess satellite quenched fractions
-- Satellite-quenching efficiencies
-- 95% bootstrap confidence intervals for quenching efficiency
-
-### `final_environmental_results.csv`
-
-Contains:
-
-- Stellar-mass and host-halo-mass bins
-- Satellite galaxy counts
-- Quenched satellite counts
-- Satellite quenched fractions
-- Satellite-quenching efficiencies
-
-These tables provide the numerical values used to construct the final scientific figures.
+- `final_quenching_results.csv`
+- `final_environmental_results.csv`
 
 ---
 
-## Statistical Uncertainties and Robustness Tests
+## Checking the Reliability of the Results
 
-### Group-Bootstrap Uncertainties
+An important part of the project was checking whether the conclusions depended strongly on the analysis choices.
 
-Statistical uncertainties are estimated through bootstrap resampling of galaxy groups rather than individual galaxies.
+I carried out several tests to investigate this.
 
-This method accounts approximately for correlations between galaxies assigned to the same dark-matter halo.
+**Statistical uncertainty:** I used bootstrap resampling of galaxy groups to calculate 95% confidence intervals. This helps account for the fact that galaxies in the same group may not be statistically independent.
 
-The analysis uses 500 bootstrap realizations for the final primary-sample results and reports percentile-based 95% confidence intervals.
+**Quenching threshold:** I repeated the quenching calculations using thresholds of −11.2, −11.0, and −10.8. The measured efficiencies changed, but the satellite-quenching excess remained positive in every tested stellar-mass bin.
 
-### Quenching-Threshold Sensitivity
+**Redshift selection:** I compared different redshift intervals to investigate whether the observed trends were sensitive to the distance range of the sample.
 
-The analysis tests three quenching thresholds:
+**Redshift adjustment:** I adjusted the central-galaxy reference fractions to better match the redshift distributions of the satellite populations.
 
-- −11.2
-- −11.0
-- −10.8
+**Survey-volume weighting:** I also compared unweighted measurements with exploratory inverse-$V_{\max}$ weighted estimates.
 
-Satellite-quenching efficiency remains positive across all five stellar-mass bins under each tested threshold.
-
-### Redshift Dependence
-
-Quenching measurements are compared across different redshift intervals to investigate sensitivity to observational selection.
-
-Additional redshift standardization is performed to assess the effects of differences between central and satellite redshift distributions.
-
-### Survey-Volume Weighting
-
-An exploratory inverse-$V_{\max}$ analysis examines how the quenching measurements respond to survey-volume weighting.
-
-The weighted and unweighted estimates are compared as a diagnostic of observational selection effects.
-
-This weighting test is not considered a complete correction for survey incompleteness.
+These checks helped me identify which trends were relatively stable and where observational selection could influence the measurements.
 
 ---
 
 ## Limitations
 
-Several limitations should be considered when interpreting the findings.
+Although the results support an environmental contribution to galaxy quenching, there are several limitations.
 
-**Survey completeness:** The stellar-mass completeness selection is approximate. Magnitude limits and differing galaxy mass-to-light ratios may affect the observed quenched fractions.
+The SDSS sample is magnitude-limited, meaning some galaxies may be underrepresented at greater distances. The stellar-mass completeness selection reduces this concern but does not eliminate it entirely.
 
-**Central/satellite classifications:** The galaxy group catalogue provides inferred environmental classifications, which may contain uncertainties.
+Central/satellite classifications and host-halo masses are also estimates obtained from a galaxy group finder, rather than direct measurements without uncertainty.
 
-**Host-halo masses:** Halo masses are catalogue estimates rather than direct measurements and may have systematic uncertainties.
+The measured quenching efficiencies depend partly on the chosen sSFR threshold, and the reported statistical confidence intervals do not include every possible systematic error.
 
-**Quenching definition:** The exact satellite-quenching efficiency depends on the adopted specific star-formation-rate threshold.
-
-**Catalogue consistency:** The analyzed Tinker group catalogue contains 559,028 records, whereas the documentation describes 559,038 records.
-
-**Physical interpretation:** The observed quenching trends are consistent with environmental effects such as ram-pressure stripping and starvation, but the measurements alone cannot uniquely identify the physical mechanism.
-
-These limitations should be considered when comparing the results with previous observational and simulation studies.
+Finally, the quenched fraction tells us whether star formation has been suppressed, but not exactly how it happened. Distinguishing mechanisms such as ram-pressure stripping and starvation would require additional measurements or analysis.
 
 ---
 
-## Scientific References
+## Scientific Background and References
 
-The scientific background and methodology draw on the following literature:
+This project builds on previous observational and theoretical research into galaxy quenching.
 
-- Gunn & Gott (1972). Foundational work on ram-pressure stripping.
-- Peng et al. (2012). Environmental quenching and satellite-quenching efficiency.
-- Wetzel et al. (2013). Satellite galaxy quenching histories and timescales.
-- Zu & Mandelbaum (2015). Galaxy stellar-mass selection and completeness.
-- Wright et al. (2022). Environmental quenching processes in galaxy simulations.
-- Goubert et al. (2024). Comparison of central and satellite quenching in observations and simulations.
+Some of the main studies used to guide the analysis include:
 
-Full bibliographic references and comparisons with previous studies are provided in the accompanying PHYS 474 conference paper.
+- Gunn & Gott (1972) — Ram-pressure stripping
+- Peng et al. (2012) — Environmental quenching and satellite-quenching efficiency
+- Wetzel et al. (2013) — Satellite-quenching timescales
+- Zu & Mandelbaum (2015) — Galaxy stellar-mass selection and completeness
+- Wright et al. (2022) — Environmental quenching in simulations
+- Goubert et al. (2024) — Central and satellite quenching in observations and simulations
+
+These studies provide the scientific background needed to interpret the results and compare them with previous work.
 
 ---
 
 ## Acknowledgements
 
-This project uses publicly available observational data from the Sloan Digital Sky Survey (SDSS), galaxy physical-property measurements from the MPA-JHU collaboration, and environmental information from the Tinker galaxy group catalogue.
+This project uses publicly available data from the Sloan Digital Sky Survey, the MPA-JHU galaxy-property catalogues, and the Tinker galaxy group catalogue.
 
-The observational surveys and original catalogue measurements are credited to their respective research teams.
+I acknowledge the survey teams and researchers responsible for collecting, processing, and publishing these data.
