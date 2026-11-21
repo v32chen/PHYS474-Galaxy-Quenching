@@ -2,8 +2,6 @@
 # coding: utf-8
 
 # In[1]:
-
-
 import numpy as np
 
 # Load the combined galaxy dataset
@@ -86,8 +84,6 @@ print("Satellites passing:",
 
 
 # In[2]:
-
-
 import numpy as np
 
 # Check the extreme values more carefully
@@ -127,8 +123,6 @@ print("\nQuality mask saved.")
 
 
 # In[3]:
-
-
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 
@@ -154,8 +148,6 @@ plt.show()
 
 
 # In[4]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -170,8 +162,6 @@ sample = (
 
 
 # In[5]:
-
-
 # Separate central and satellite galaxies
 central = sample & (p_sat < 0.5)
 satellite = sample & (p_sat > 0.5)
@@ -184,8 +174,6 @@ print("Satellite galaxies:", np.count_nonzero(satellite))
 
 
 # In[6]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -240,8 +228,6 @@ plt.show()
 
 
 # In[7]:
-
-
 import numpy as np
 
 # Proposed quenching threshold
@@ -290,10 +276,3 @@ print(f"95% CI: {ci_sat[0]:.4f} to {ci_sat[1]:.4f}")
 
 print(f"\nExcess satellite quenching: {delta_f:.4f}")
 print(f"Difference: {100*delta_f:.2f} percentage points")
-
-
-# In[ ]:
-
-
-
-
