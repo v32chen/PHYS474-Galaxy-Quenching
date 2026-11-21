@@ -2,8 +2,6 @@
 # coding: utf-8
 
 # In[1]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -113,10 +111,3 @@ plt.savefig(
     bbox_inches="tight"
 )
 plt.show()
-
-
-# In[ ]:
-
-
-
-
