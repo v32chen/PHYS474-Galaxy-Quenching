@@ -2,8 +2,6 @@
 # coding: utf-8
 
 # In[10]:
-
-
 import numpy as np
 from astropy.io import fits
 
@@ -61,8 +59,6 @@ print("Number of combined records:", len(log_mass))
 
 
 # In[11]:
-
-
 print("COMBINED GALAXY SAMPLE")
 print("----------------------")
 print("Total matched records:", len(z))
@@ -104,8 +100,6 @@ for i in range(5):
 
 
 # In[12]:
-
-
 np.savez_compressed(
     "galaxy_combined_preclean.npz",
     mpa_row=mpa_idx,
@@ -127,10 +121,3 @@ np.savez_compressed(
 )
 
 print("Combined dataset saved successfully!")
-
-
-# In[ ]:
-
-
-
-
