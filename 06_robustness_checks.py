@@ -2,8 +2,6 @@
 # coding: utf-8
 
 # In[1]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -103,8 +101,6 @@ plt.show()
 
 
 # In[2]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
@@ -267,8 +263,6 @@ print("\nResults saved.")
 
 
 # In[3]:
-
-
 plt.figure(figsize=(10, 6))
 
 plt.imshow(
@@ -307,8 +301,6 @@ plt.show()
 
 
 # In[4]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -392,8 +384,6 @@ for lo, hi in zip(mass_edges[:-1], mass_edges[1:]):
 
 
 # In[5]:
-
-
 plt.figure(figsize=(9, 6))
 
 plt.plot(
@@ -424,8 +414,6 @@ plt.show()
 
 
 # In[6]:
-
-
 import numpy as np
 
 with np.load("galaxy_combined_preclean.npz") as d:
@@ -473,8 +461,6 @@ for m_lo, m_hi in zip(mass_edges[:-1], mass_edges[1:]):
 
 
 # In[7]:
-
-
 import numpy as np
 
 with np.load("galaxy_combined_preclean.npz") as d:
@@ -566,8 +552,6 @@ for lo, hi in zip(mass_edges[:-1], mass_edges[1:]):
 
 
 # In[8]:
-
-
 import numpy as np
 
 with np.load("galaxy_combined_preclean.npz") as d:
@@ -615,10 +599,3 @@ print(f"log stellar mass limit = {limit_005:.3f}")
 np.save("galaxy_final_sample_mask.npy", primary)
 
 print("\nFinal sample mask saved.")
-
-
-# In[ ]:
-
-
-
-
