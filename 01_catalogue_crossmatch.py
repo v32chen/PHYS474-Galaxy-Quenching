@@ -2,8 +2,6 @@
 # coding: utf-8
 
 # In[30]:
-
-
 import sys
 import site
 
@@ -21,8 +19,6 @@ print("Astropy location:", astropy.__file__)
 
 
 # In[31]:
-
-
 from astropy.io import fits
 
 # Open your SDSS galaxy catalogue
@@ -41,8 +37,6 @@ with fits.open(filename) as hdul:
 
 
 # In[32]:
-
-
 from astropy.io import fits
 from pathlib import Path
 
@@ -70,8 +64,6 @@ for name in files:
 
 
 # In[24]:
-
-
 from astropy.io import fits
 
 with fits.open("totlgm_dr7_v5_2.fit") as h:
@@ -91,8 +83,6 @@ for i in range(5):
 
 
 # In[25]:
-
-
 import numpy as np
 
 filename = "sdss_kdgroups_v1.0.dat"
@@ -116,8 +106,6 @@ print(group[:5])
 
 
 # In[26]:
-
-
 import numpy as np
 from astropy.io import fits
 from astropy.coordinates import SkyCoord, search_around_sky
@@ -141,8 +129,6 @@ print("Tinker galaxies:", len(tinker_ra))
 
 
 # In[27]:
-
-
 # Keep only valid positions and redshifts
 valid_mpa = (
     np.isfinite(mpa_ra) &
@@ -192,8 +178,6 @@ print("Position-matching candidate pairs:", len(i_t))
 
 
 # In[28]:
-
-
 # Calculate redshift differences
 dz = np.abs(tinker_z[i_t] - mpa_z[i_m])
 
@@ -249,8 +233,6 @@ print("\nCross-match indices saved.")
 
 
 # In[29]:
-
-
 print("First five unambiguous matches:\n")
 
 print("Tinker ID | MPA-JHU row | Separation | Delta z")
@@ -263,10 +245,3 @@ for k in range(min(5, len(matched_tinker))):
         f"{matched_sep[k]:7.3f}\" | "
         f"{matched_dz[k]:.6f}"
     )
-
-
-# In[ ]:
-
-
-
-
