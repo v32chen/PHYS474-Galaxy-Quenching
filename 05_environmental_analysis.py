@@ -2,8 +2,6 @@
 # coding: utf-8
 
 # In[1]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -129,8 +127,6 @@ plt.show()
 
 
 # In[2]:
-
-
 import numpy as np
 
 # Keep the same stellar-mass selection
@@ -196,8 +192,6 @@ for z_low, z_high in redshift_ranges:
 
 
 # In[3]:
-
-
 import numpy as np
 import csv
 
@@ -309,8 +303,6 @@ print("\nAnalysis completed and results saved!")
 
 
 # In[5]:
-
-
 import matplotlib.pyplot as plt
 
 mass_centers = (mass_edges[:-1] + mass_edges[1:]) / 2
@@ -360,10 +352,3 @@ for values, colorbar_label, filename in plots:
     plt.tight_layout()
     plt.savefig(filename, bbox_inches="tight")
     plt.show()
-
-
-# In[ ]:
-
-
-
-
